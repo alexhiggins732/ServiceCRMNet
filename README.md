@@ -1,12 +1,12 @@
 # Garage Door Service CRM
 
 A multi-tenant, SaaS CRM optimized for Garage Door Services (Housecall Pro-like).
-Built using the Microsoft stack (.NET 10, C#, ASP.NET Core API, Blazor Server, SQL Server, EF Core).
+Built using the Microsoft stack (.NET 10, C#, ASP.NET Core API, Blazor Web App, SQL Server, EF Core).
 
 ## Architecture & Features
 
 - **Multi-tenant SaaS**: Isolated data at the database layer using EF Core Global Query Filters. Tenants identified via JWT `tid` claim or header overrides.
-- **Pluggable Modular System**: Integrations (Meta, Twilio), AI Assistants (OpenAI, Gemini, Grok), and domain modules are independent class libraries implementing `IModule`.
+- **Pluggable Modular System**: Integrations (Meta, Twilio), AI Assistants (OpenAI, Gemini, Grok), Pricing, and Core CRM are independent class libraries implementing `ICrmModule`.
 - **Reliability Primitives**: Incoming webhook requests use `Idempotency-Key` and Hangfire for robust job queueing and background processing. Structured logging via `X-Correlation-ID`.
 - **Unified Communications Inbox**: Normalize inbound messages across SMS, Email, and Meta via webhook processors.
 - **Pricing & Estimates Book**: Dedicated module for Service items, customizable pricing templates, and estimate-to-invoice pipeline.
@@ -50,48 +50,30 @@ Boot up the entire stack using Docker and our `dev.ps1` orchestrator. The API, W
    .\scripts\dev.ps1 migrate
    ```
 
-5. **Seed Initial Data**:
-   ```powershell
-   .\scripts\dev.ps1 seed
-   ```
-   > **Note**: Seed creates a default tenant (`default`) and admin (`admin@example.com` / `YourStrong@Passw0rd!`).
-
-6. **Access the Application**:
+5. **Access the Application**:
+   > **Note**: Default seed creates tenant "Demo Garage Doors" and user `admin@example.com` / `YourStrong@Passw0rd!`.
    - Web UI: [http://localhost:5002](http://localhost:5002)
    - API Swagger: [http://localhost:5000/swagger](http://localhost:5000/swagger)
    - Hangfire Dashboard: [http://localhost:5000/hangfire](http://localhost:5000/hangfire)
+   - Health Check: [http://localhost:5000/health](http://localhost:5000/health)
 
 ---
 
-## Non-Docker Local Development
+## How to Add a New Module
 
-If you prefer to run the dotnet projects directly on your host machine against a local SQL Server Express instance:
-
-1. **Update Connection String**:
-   In `src/Crm.Api/appsettings.Development.json` (or using User Secrets), update the database connection string:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CrmDb;Trusted_Connection=True;MultipleActiveResultSets=true"
+Adding a new feature domain (e.g., Quickbooks Integration, Advanced Dispatching) is easy:
+1. Create a new class library project (e.g., `Crm.Modules.Dispatch`).
+2. Add a project reference to `Crm.Shared`.
+3. Create a class implementing `ICrmModule`:
+   ```csharp
+   public class DispatchModule : ICrmModule
+   {
+       public void RegisterServices(IServiceCollection services, IConfiguration configuration) { ... }
+       public void MapEndpoints(IEndpointRouteBuilder endpoints) { ... }
+       public void ConfigureBackgroundJobs(IRecurringJobManager jobs) { ... }
    }
    ```
-
-2. **Apply Migrations**:
-   ```powershell
-   cd src\Crm.Infrastructure
-   dotnet ef database update -s ..\Crm.Api\Crm.Api.csproj
-   ```
-
-3. **Run the API**:
-   ```powershell
-   cd src\Crm.Api
-   dotnet run
-   ```
-
-4. **Run the Web App**:
-   ```powershell
-   cd src\Crm.Web
-   dotnet run
-   ```
+4. Add the project reference to `Crm.Api` and instantiate the module in `Program.cs`.
 
 ---
 
@@ -105,6 +87,18 @@ Run the test suite and verify code format:
 
 # Ensure codebase is formatted correctly
 .\scripts\dev.ps1 fmt
+
+# Reset the database to factory settings
+.\scripts\dev.ps1 reset-db
 ```
 
 Continuous Integration automatically runs tests and checks formatting using GitHub Actions.
+
+---
+
+## Roadmap
+
+- [ ] **Payments Integration**: Stripe/Square modules for processing invoice payments online or in the field.
+- [ ] **Advanced Dispatching**: Route optimization algorithms and calendar-based map views.
+- [ ] **Photos & Attachments**: Upload before/after job photos via S3/Azure Blob integrations.
+- [ ] **Reporting Module**: BI dashboards for revenue, tech performance, and lead conversion rates.

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Integrations.Meta;
+namespace Crm.Modules.Integrations.Meta;
 
 public class MetaModule : IModule
 {

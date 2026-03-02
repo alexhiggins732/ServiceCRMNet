@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Crm.Domain\Crm.Domain.csproj" />
+    <ProjectReference Include="..\Crm.Application\Crm.Application.csproj" />
+    <ProjectReference Include="..\Crm.Shared\Crm.Shared.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure\Crm.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

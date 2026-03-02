@@ -1,11 +1,18 @@
 using Crm.Domain.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace Crm.Domain.Entities;
 
-public class User : TenantEntity
+public class User : IdentityUser<Guid>
 {
-    public required string Email { get; set; }
-    public required string FirstName { get; set; }
-    public required string LastName { get; set; }
-    public required string PasswordHash { get; set; }
+    public Guid TenantId { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+}
+
+public class Role : IdentityRole<Guid>
+{
+    public Guid TenantId { get; set; }
 }

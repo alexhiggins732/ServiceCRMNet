@@ -50,6 +50,7 @@ public static class DependencyInjection
         // Add IDbContext implementation if you created one in Application layer
         // services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<CrmDbContext>());
 
+        services.AddScoped<DatabaseSeeder>();
         return services;
     }
 }
