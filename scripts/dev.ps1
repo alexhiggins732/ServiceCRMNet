@@ -20,7 +20,7 @@ $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path | Split-Path -Parent
 function Write-Step ($message) {
     Write-Host "`n==> $message" -ForegroundColor Cyan
 }
-
+ Write-Step "Repo Root: " $RepoRoot
 switch ($Command) {
     "up" {
         Write-Step "Starting Docker containers in background..."
