@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.3" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="Moq" Version="4.20.70" />
     <PackageReference Include="xunit" Version="2.9.3" />
@@ -25,7 +25,7 @@
     <ProjectReference Include="..\..\src\Crm.Application\Crm.Application.csproj" />
     <ProjectReference Include="..\..\src\Crm.Infrastructure\Crm.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Crm.Shared\Crm.Shared.csproj" />
-    <ProjectReference Include="..\..\src\Crm.Pricing\Crm.Pricing.csproj" />
+    <ProjectReference Include="..\..\src\Crm.Modules.Pricing\Crm.Modules.Pricing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
-using Crm.AiAssistant;
+using Crm.Modules.AiAssistant;
 using Crm.Infrastructure;
 using Crm.Infrastructure.Middleware;
 using Crm.Infrastructure.Tenancy;
-using Crm.Integrations.Meta;
-using Crm.Integrations.Twilio;
-using Crm.Pricing;
+using Crm.Modules.Integrations.Meta;
+using Crm.Modules.Integrations.Twilio;
+using Crm.Modules.Pricing;
+using Crm.Infrastructure.Persistence;
 using Crm.Shared.Modules;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddIdentityCore<Crm.Domain.Entities.User>().AddEntityFrameworkStores<Crm.Infrastructure.Persistence.CrmDbContext>();
 
 // Auth
 var jwtSecret = builder.Configuration["JWT_SECRET"] ?? "ThisIsASecretKeyForJwtAuthenticationThatNeedsToBeLongEnoughToWork!";
@@ -52,6 +54,12 @@ foreach (var module in modules)
 }
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<Crm.Infrastructure.Persistence.DatabaseSeeder>();
+    await seeder.SeedAsync().ConfigureAwait(false);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -107,4 +115,4 @@ foreach (var module in modules)
     module.MapEndpoints(app);
 }
 
-app.Run();
+await app.RunAsync();

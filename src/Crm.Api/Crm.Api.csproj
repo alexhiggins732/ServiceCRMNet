@@ -5,19 +5,15 @@
     <ProjectReference Include="..\Crm.Application\Crm.Application.csproj" />
     <ProjectReference Include="..\Crm.Domain\Crm.Domain.csproj" />
     <ProjectReference Include="..\Crm.Shared\Crm.Shared.csproj" />
-    <ProjectReference Include="..\Crm.Integrations.Meta\Crm.Integrations.Meta.csproj" />
-    <ProjectReference Include="..\Crm.Integrations.Twilio\Crm.Integrations.Twilio.csproj" />
-    <ProjectReference Include="..\Crm.AiAssistant\Crm.AiAssistant.csproj" />
-    <ProjectReference Include="..\Crm.Pricing\Crm.Pricing.csproj" />
+    <ProjectReference Include="..\Crm.Modules.Integrations.Meta\Crm.Modules.Integrations.Meta.csproj" />
+    <ProjectReference Include="..\Crm.Modules.Integrations.Twilio\Crm.Modules.Integrations.Twilio.csproj" />
+    <ProjectReference Include="..\Crm.Modules.AiAssistant\Crm.Modules.AiAssistant.csproj" />
+    <ProjectReference Include="..\Crm.Modules.Pricing\Crm.Modules.Pricing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
   </ItemGroup>
 

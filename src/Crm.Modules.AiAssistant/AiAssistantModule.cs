@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.AiAssistant;
+namespace Crm.Modules.AiAssistant;
 
 public interface IChatProvider
 {

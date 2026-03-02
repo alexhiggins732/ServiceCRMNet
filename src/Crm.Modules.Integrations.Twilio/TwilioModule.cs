@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crm.Integrations.Twilio;
+namespace Crm.Modules.Integrations.Twilio;
 
 public class TwilioModule : IModule
 {
