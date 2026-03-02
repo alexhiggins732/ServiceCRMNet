@@ -1,7 +1,59 @@
-﻿@page "/"
+@page "/"
+@inject CrmApiClient ApiClient
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Dashboard</MudText>
 
-Welcome to your new app.
+<MudGrid>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2" Class="pa-4 rounded-lg">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Leads Today</MudText>
+                <MudText Typo="Typo.h3" Color="Color.Primary">@leadsCount</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2" Class="pa-4 rounded-lg">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Jobs Today</MudText>
+                <MudText Typo="Typo.h3" Color="Color.Secondary">@jobsCount</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudCard Elevation="2" Class="pa-4 rounded-lg">
+            <MudCardContent>
+                <MudText Typo="Typo.h6">Unread Messages</MudText>
+                <MudText Typo="Typo.h3" Color="Color.Error">@messagesCount</MudText>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private int leadsCount = 0;
+    private int jobsCount = 0;
+    private int messagesCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var leads = await ApiClient.GetLeadsAsync();
+            leadsCount = leads.Count(l => l.CreatedAt.Date == DateTime.Today);
+
+            var jobs = await ApiClient.GetJobsAsync();
+            jobsCount = jobs.Count(j => j.ScheduledStart?.Date == DateTime.Today);
+
+            var msgs = await ApiClient.GetMessagesAsync();
+            messagesCount = msgs.Count; // Simplification for demo
+        }
+        catch
+        {
+            // Ignore for initial load if unauthorized etc
+        }
+    }
+}

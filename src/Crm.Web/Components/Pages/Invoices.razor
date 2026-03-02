@@ -1,8 +1,43 @@
 @page "/invoices"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
+@inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
 <PageTitle>Invoices</PageTitle>
 
-<h1>Invoices</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Invoices</MudText>
 
-<p>This is the Invoices page stub.</p>
+<MudTable Items="@invoices" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Invoice Title</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Total</MudTh>
+        <MudTh>Amount Paid</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Status">
+            <MudChip T="string" Color="Color.Error" Size="Size.Small">@context.Status</MudChip>
+        </MudTd>
+        <MudTd DataLabel="Total">@context.TotalAmount.ToString("C")</MudTd>
+        <MudTd DataLabel="Amount Paid">@context.AmountPaid.ToString("C")</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Invoice> invoices = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            invoices = await ApiClient.GetInvoicesAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

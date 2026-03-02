@@ -52,7 +52,7 @@ Boot up the entire stack using Docker and our `dev.ps1` orchestrator. The API, W
 
 5. **Access the Application**:
    > **Note**: Default seed creates tenant "Demo Garage Doors" and user `admin@example.com` / `YourStrong@Passw0rd!`.
-   - Web UI: [http://localhost:5002](http://localhost:5002)
+   - Web UI (MudBlazor UI): [http://localhost:5002](http://localhost:5002)
    - API Swagger: [http://localhost:5000/swagger](http://localhost:5000/swagger)
    - Hangfire Dashboard: [http://localhost:5000/hangfire](http://localhost:5000/hangfire)
    - Health Check: [http://localhost:5000/health](http://localhost:5000/health)

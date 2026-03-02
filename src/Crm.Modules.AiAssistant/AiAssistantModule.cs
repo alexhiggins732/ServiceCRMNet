@@ -51,7 +51,7 @@ public class AiChatRequest
     public required string Messages { get; set; }
 }
 
-public class AiAssistantModule : IModule
+public class AiAssistantModule : ICrmModule
 {
     public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {

@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 // Modules Discovery
-var modules = new List<IModule>
+var modules = new List<ICrmModule>
 {
     new MetaModule(),
     new TwilioModule(),

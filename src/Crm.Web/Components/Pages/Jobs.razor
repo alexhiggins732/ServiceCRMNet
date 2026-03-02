@@ -1,8 +1,40 @@
 @page "/jobs"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
 <PageTitle>Jobs</PageTitle>
 
-<h1>Jobs</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Jobs</MudText>
 
-<p>This is the Jobs page stub.</p>
+<MudTable Items="@jobs" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Job Title</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Scheduled Date</MudTh>
+        <MudTh>Notes</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Status">@context.Status</MudTd>
+        <MudTd DataLabel="Scheduled Date">@context.ScheduledStart?.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Notes">@context.Notes</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Job> jobs = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            jobs = await ApiClient.GetJobsAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -1,8 +1,40 @@
 @page "/schedule"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
 <PageTitle>Schedule</PageTitle>
 
-<h1>Schedule</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Appointments</MudText>
 
-<p>This is the Schedule page stub.</p>
+<MudTable Items="@appointments" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Start</MudTh>
+        <MudTh>End</MudTh>
+        <MudTh>Location</MudTh>
+        <MudTh>Notes</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Start">@context.Start.ToString("g")</MudTd>
+        <MudTd DataLabel="End">@context.End.ToString("g")</MudTd>
+        <MudTd DataLabel="Location">@context.Location</MudTd>
+        <MudTd DataLabel="Notes">@context.Notes</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Appointment> appointments = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            appointments = await ApiClient.GetAppointmentsAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -1,8 +1,77 @@
 @page "/estimates"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
+@inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
 <PageTitle>Estimates</PageTitle>
 
-<h1>Estimates</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Estimates</MudText>
 
-<p>This is the Estimates page stub.</p>
+<MudTable Items="@estimates" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Estimate Title</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Subtotal</MudTh>
+        <MudTh>Total</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Title">@context.Title</MudTd>
+        <MudTd DataLabel="Status">
+            <MudChip T="string" Color="Color.Warning" Size="Size.Small">@context.Status</MudChip>
+        </MudTd>
+        <MudTd DataLabel="Subtotal">@context.TotalAmount.ToString("C")</MudTd>
+        <MudTd DataLabel="Total">@context.TotalAmount.ToString("C")</MudTd>
+        <MudTd>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem OnClick="@(() => ApplyTemplate(context))">Apply Template</MudMenuItem>
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Estimate> estimates = new();
+    private List<PricebookTemplate> templates = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            estimates = await ApiClient.GetEstimatesAsync();
+            templates = await ApiClient.GetTemplatesAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ApplyTemplate(Estimate estimate)
+    {
+        if (templates.Any())
+        {
+            var template = templates.First(); // Auto-apply the first one for MVP demo
+            try
+            {
+                var updated = await ApiClient.ApplyTemplateToEstimateAsync(estimate.Id, template.Id);
+                if (updated != null)
+                {
+                    var index = estimates.FindIndex(e => e.Id == estimate.Id);
+                    if (index != -1) estimates[index] = updated;
+                    Snackbar.Add($"Template {template.Name} applied successfully", Severity.Success);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error applying template: {ex.Message}", Severity.Error);
+            }
+        }
+        else
+        {
+            Snackbar.Add("No templates available", Severity.Warning);
+        }
+    }
+}

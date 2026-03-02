@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Crm.Modules.Integrations.Twilio;
 
-public class TwilioModule : IModule
+public class TwilioModule : ICrmModule
 {
     public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {

@@ -18,12 +18,18 @@ public class Lead : TenantEntity
     public string? ContactInfo { get; set; }
     public required string Source { get; set; }
     public string? Status { get; set; }
+    public Guid? CustomerId { get; set; }
 }
 
 public class Job : TenantEntity
 {
-    public Guid CustomerId { get; set; }
+    public Guid? CustomerId { get; set; }
+    public Guid? LeadId { get; set; }
     public required string Title { get; set; }
     public required string Description { get; set; }
     public string? Status { get; set; }
+    public Guid? AssignedUserId { get; set; }
+    public DateTime? ScheduledStart { get; set; }
+    public DateTime? ScheduledEnd { get; set; }
+    public string? Notes { get; set; }
 }

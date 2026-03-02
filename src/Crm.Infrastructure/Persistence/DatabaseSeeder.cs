@@ -25,18 +25,19 @@ public class DatabaseSeeder
             {
                 _logger.LogInformation("Seeding initial data...");
 
+                var tenantId = Guid.NewGuid();
                 var tenant = new Tenant
                 {
-                    Id = Guid.NewGuid(),
+                    Id = tenantId,
                     Name = "Demo Garage Doors",
                     Domain = "demo"
                 };
 
                 _context.Tenants.Add(tenant);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await _context.SaveChangesAsync();
 
                 var adminEmail = "admin@example.com";
-                if (await _userManager.FindByEmailAsync(adminEmail).ConfigureAwait(false) == null)
+                if (await _userManager.FindByEmailAsync(adminEmail) == null)
                 {
                     var admin = new User
                     {
@@ -44,11 +45,11 @@ public class DatabaseSeeder
                         Email = adminEmail,
                         FirstName = "Admin",
                         LastName = "User",
-                        TenantId = tenant.Id,
+                        TenantId = tenantId,
                         EmailConfirmed = true
                     };
 
-                    var result = await _userManager.CreateAsync(admin, "YourStrong@Passw0rd!").ConfigureAwait(false);
+                    var result = await _userManager.CreateAsync(admin, "YourStrong@Passw0rd!");
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("Created admin user: {Email}", adminEmail);
@@ -58,6 +59,31 @@ public class DatabaseSeeder
                         _logger.LogError("Failed to create admin user");
                     }
                 }
+
+                // Seed Demo Data
+                var customerId = Guid.NewGuid();
+                _context.Customers.Add(new Customer { Id = customerId, TenantId = tenantId, FirstName = "Alice", LastName = "Johnson", Email = "alice@example.com", Phone = "555-0101", Address = "123 Maple St" });
+                _context.Customers.Add(new Customer { TenantId = tenantId, FirstName = "Bob", LastName = "Smith", Email = "bob@example.com", Phone = "555-0202", Address = "456 Oak Ave" });
+
+                var leadId = Guid.NewGuid();
+                _context.Leads.Add(new Lead { Id = leadId, TenantId = tenantId, Name = "Fix spring", Status = "New", Source = "Website" });
+
+                var jobId = Guid.NewGuid();
+                _context.Jobs.Add(new Job { Id = jobId, TenantId = tenantId, Title = "Spring repair", Description = "Needs new tension spring", Status = "Scheduled", CustomerId = customerId });
+
+                _context.Messages.Add(new Message { TenantId = tenantId, CustomerId = customerId, Channel = Crm.Domain.Enums.MessageChannel.Sms, Direction = Crm.Domain.Enums.MessageDirection.Inbound, Body = "Hi, my garage door won't open.", ExternalId = "ext-1", ReceivedAt = DateTime.UtcNow.AddHours(-2) });
+
+                var prodId = Guid.NewGuid();
+                var prod = new ProductService { Id = prodId, TenantId = tenantId, Sku = "SPRING-01", Name = "Torsion Spring Replacement", UnitPrice = 150.00m, UnitType = "Each", Taxable = true };
+                _context.ProductsServices.Add(prod);
+
+                var templateId = Guid.NewGuid();
+                _context.PricebookTemplates.Add(new PricebookTemplate { Id = templateId, TenantId = tenantId, Name = "Standard Spring Repair", Description = "Replace 2 torsion springs" });
+
+                _context.TemplateItems.Add(new TemplateItem { TenantId = tenantId, PricebookTemplateId = templateId, ProductServiceId = prodId, Quantity = 2 });
+
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Demo data seeded successfully.");
             }
         }
         catch (Exception ex)

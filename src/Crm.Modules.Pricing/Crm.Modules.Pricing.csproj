@@ -4,6 +4,7 @@
     <ProjectReference Include="..\Crm.Application\Crm.Application.csproj" />
     <ProjectReference Include="..\Crm.Domain\Crm.Domain.csproj" />
     <ProjectReference Include="..\Crm.Shared\Crm.Shared.csproj" />
+    <ProjectReference Include="..\Crm.Infrastructure\Crm.Infrastructure.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

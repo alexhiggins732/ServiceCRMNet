@@ -1,8 +1,45 @@
 @page "/automations"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
 <PageTitle>Automations</PageTitle>
 
-<h1>Automations</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Automations</MudText>
 
-<p>This is the Automations page stub.</p>
+<MudTable Items="@automations" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <ToolBarContent>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">New Rule</MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Trigger Type</MudTh>
+        <MudTh>Action Type</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Status">
+            <MudSwitch T="bool" @bind-Value="@context.IsEnabled" Color="Color.Primary" />
+        </MudTd>
+        <MudTd DataLabel="Trigger Type">@context.TriggerType</MudTd>
+        <MudTd DataLabel="Action Type">@context.ActionType</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Automation> automations = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            automations = await ApiClient.GetAutomationsAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

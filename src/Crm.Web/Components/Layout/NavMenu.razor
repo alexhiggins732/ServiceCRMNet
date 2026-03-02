@@ -1,67 +1,17 @@
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Garage Door CRM</a>
-    </div>
-</div>
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+    <MudNavLink Href="/inbox" Icon="@Icons.Material.Filled.Inbox">Inbox</MudNavLink>
+    <MudNavLink Href="/leads" Icon="@Icons.Material.Filled.FilterAlt">Leads</MudNavLink>
+    <MudNavLink Href="/schedule" Icon="@Icons.Material.Filled.CalendarMonth">Schedule</MudNavLink>
+    <MudNavLink Href="/customers" Icon="@Icons.Material.Filled.People">Customers</MudNavLink>
+    <MudNavLink Href="/jobs" Icon="@Icons.Material.Filled.Work">Jobs</MudNavLink>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+    <MudNavGroup Title="Pricing & Billing" Expanded="true" Icon="@Icons.Material.Filled.AttachMoney">
+        <MudNavLink Href="/pricebook" Icon="@Icons.Material.Filled.LibraryBooks">Pricebook</MudNavLink>
+        <MudNavLink Href="/estimates" Icon="@Icons.Material.Filled.RequestQuote">Estimates</MudNavLink>
+        <MudNavLink Href="/invoices" Icon="@Icons.Material.Filled.Receipt">Invoices</MudNavLink>
+    </MudNavGroup>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Dashboard
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="inbox">
-                <span class="bi bi-envelope-nav-menu" aria-hidden="true"></span> Inbox
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="leads">
-                <span class="bi bi-person-lines-fill-nav-menu" aria-hidden="true"></span> Leads
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="schedule">
-                <span class="bi bi-calendar-event-nav-menu" aria-hidden="true"></span> Schedule
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="customers">
-                <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Customers
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="jobs">
-                <span class="bi bi-briefcase-fill-nav-menu" aria-hidden="true"></span> Jobs
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="automations">
-                <span class="bi bi-gear-fill-nav-menu" aria-hidden="true"></span> Automations
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="pricebook">
-                <span class="bi bi-book-fill-nav-menu" aria-hidden="true"></span> Pricebook
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="estimates">
-                <span class="bi bi-file-earmark-text-nav-menu" aria-hidden="true"></span> Estimates
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="invoices">
-                <span class="bi bi-receipt-nav-menu" aria-hidden="true"></span> Invoices
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="ai-assistant">
-                <span class="bi bi-robot-nav-menu" aria-hidden="true"></span> AI Assistant
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    <MudNavLink Href="/automations" Icon="@Icons.Material.Filled.AutoMode">Automations</MudNavLink>
+    <MudNavLink Href="/ai-assistant" Icon="@Icons.Material.Filled.SmartToy">AI Assistant</MudNavLink>
+</MudNavMenu>

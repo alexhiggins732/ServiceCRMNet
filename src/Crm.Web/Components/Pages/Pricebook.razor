@@ -1,8 +1,61 @@
 @page "/pricebook"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
 <PageTitle>Pricebook</PageTitle>
 
-<h1>Pricebook</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Pricebook</MudText>
 
-<p>This is the Pricebook page stub.</p>
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Products & Services">
+        <MudTable Items="@products" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+            <HeaderContent>
+                <MudTh>SKU</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Unit Price</MudTh>
+                <MudTh>Unit Type</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="SKU">@context.Sku</MudTd>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Unit Price">@context.UnitPrice.ToString("C")</MudTd>
+                <MudTd DataLabel="Unit Type">@context.UnitType</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudTabPanel>
+
+    <MudTabPanel Text="Templates">
+        <MudTable Items="@templates" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Description</MudTh>
+                <MudTh>Items Count</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Items Count">@context.Items.Count</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    private List<ProductService> products = new();
+    private List<PricebookTemplate> templates = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            products = await ApiClient.GetProductsAsync();
+            templates = await ApiClient.GetTemplatesAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -1,8 +1,51 @@
 @page "/leads"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
 <PageTitle>Leads</PageTitle>
 
-<h1>Leads</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Leads Pipeline</MudText>
 
-<p>This is the Leads page stub.</p>
+<MudTable Items="@leads" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Lead Name</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Source</MudTh>
+        <MudTh>Created</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Status">
+            <MudChip T="string" Color="@GetStatusColor(context.Status)">@context.Status</MudChip>
+        </MudTd>
+        <MudTd DataLabel="Source">@context.Source</MudTd>
+        <MudTd DataLabel="Created">@context.CreatedAt.ToShortDateString()</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Lead> leads = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            leads = await ApiClient.GetLeadsAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private Color GetStatusColor(string status) => status switch
+    {
+        "New" => Color.Info,
+        "Quoted" => Color.Warning,
+        "Scheduled" => Color.Primary,
+        "Complete" => Color.Success,
+        _ => Color.Default
+    };
+}

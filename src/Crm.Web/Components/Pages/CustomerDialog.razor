@@ -1,0 +1,38 @@
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField @bind-Value="Customer.FirstName" Label="First Name" Required="true" />
+        <MudTextField @bind-Value="Customer.LastName" Label="Last Name" Required="true" />
+        <MudTextField @bind-Value="Customer.Email" Label="Email" />
+        <MudTextField @bind-Value="Customer.Phone" Label="Phone" />
+        <MudTextField @bind-Value="Customer.Address" Label="Address" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public Customer Customer { get; set; } = new Customer { FirstName = "", LastName = "" };
+
+    void Cancel() => MudDialog.Cancel();
+
+    async Task Submit()
+    {
+        try
+        {
+            await ApiClient.SaveCustomerAsync(Customer);
+            Snackbar.Add("Customer saved successfully", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error saving customer: {ex.Message}", Severity.Error);
+        }
+    }
+}

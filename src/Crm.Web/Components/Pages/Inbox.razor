@@ -1,8 +1,42 @@
 @page "/inbox"
+@using Crm.Domain.Entities
+@inject CrmApiClient ApiClient
 @rendermode InteractiveServer
 
-<PageTitle>Inbox</PageTitle>
+<PageTitle>Unified Inbox</PageTitle>
 
-<h1>Inbox</h1>
+<MudText Typo="Typo.h4" Class="mb-4">Unified Inbox</MudText>
 
-<p>This is the Inbox page stub.</p>
+<MudTable Items="@messages" Dense="true" Hover="true" Bordered="true" Striped="true" Loading="@isLoading">
+    <HeaderContent>
+        <MudTh>Date</MudTh>
+        <MudTh>Channel</MudTh>
+        <MudTh>Direction</MudTh>
+        <MudTh>Message</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Date">@context.ReceivedAt.ToString("g")</MudTd>
+        <MudTd DataLabel="Channel">
+            <MudChip T="string" Color="Color.Primary" Size="Size.Small">@context.Channel</MudChip>
+        </MudTd>
+        <MudTd DataLabel="Direction">@context.Direction</MudTd>
+        <MudTd DataLabel="Message">@context.Body</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<Message> messages = new();
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            messages = await ApiClient.GetMessagesAsync();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

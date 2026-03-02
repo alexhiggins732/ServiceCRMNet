@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Crm.Modules.Integrations.Meta;
 
-public class MetaModule : IModule
+public class MetaModule : ICrmModule
 {
     public void RegisterServices(IServiceCollection services, IConfiguration configuration)
     {
