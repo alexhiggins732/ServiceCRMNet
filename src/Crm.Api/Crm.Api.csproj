@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Crm.Infrastructure\Crm.Infrastructure.csproj" />
+    <ProjectReference Include="..\Crm.Application\Crm.Application.csproj" />
+    <ProjectReference Include="..\Crm.Domain\Crm.Domain.csproj" />
+    <ProjectReference Include="..\Crm.Shared\Crm.Shared.csproj" />
+    <ProjectReference Include="..\Crm.Integrations.Meta\Crm.Integrations.Meta.csproj" />
+    <ProjectReference Include="..\Crm.Integrations.Twilio\Crm.Integrations.Twilio.csproj" />
+    <ProjectReference Include="..\Crm.AiAssistant\Crm.AiAssistant.csproj" />
+    <ProjectReference Include="..\Crm.Pricing\Crm.Pricing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
