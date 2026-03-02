@@ -20,7 +20,7 @@ $RepoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path | Split-Path -Parent
 function Write-Step ($message) {
     Write-Host "`n==> $message" -ForegroundColor Cyan
 }
- Write-Step "Repo Root: " $RepoRoot
+
 switch ($Command) {
     "up" {
         Write-Step "Starting Docker containers in background..."
@@ -41,12 +41,18 @@ switch ($Command) {
     "migrate" {
         Write-Step "Running Entity Framework migrations..."
         Set-Location "$RepoRoot\src\Crm.Infrastructure"
-        dotnet ef database update -s "..\Crm.Api\Crm.Api.csproj"
-        Write-Host "Migrations complete!" -ForegroundColor Green
+
+        # Try migration, catch and give instructions to reset
+        try {
+            dotnet ef database update -s "..\Crm.Api\Crm.Api.csproj"
+            Write-Host "Migrations complete!" -ForegroundColor Green
+        } catch {
+            Write-Host "Migration failed! The database might contain old tables. Try running: .\scripts\dev.ps1 reset-db" -ForegroundColor Red
+            throw
+        }
     }
     "seed" {
-        Write-Step "Seeding initial data (placeholder)..."
-        # Seed is currently triggered automatically via API startup (Program.cs), so we can just call health or rely on boot.
+        Write-Step "Seeding initial data..."
         Write-Host "Data seed is executed automatically on API startup in Development."
     }
     "reset-db" {

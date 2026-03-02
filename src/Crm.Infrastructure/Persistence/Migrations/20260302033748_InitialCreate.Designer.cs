@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Crm.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    [Migration("20260302031414_InitialCreate_V2")]
-    partial class InitialCreate_V2
+    [Migration("20260302033748_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
