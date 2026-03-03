@@ -1,3 +1,4 @@
+using System.Text;
 using Crm.Modules.AiAssistant;
 using Crm.Infrastructure;
 using Crm.Infrastructure.Middleware;
@@ -5,12 +6,12 @@ using Crm.Infrastructure.Tenancy;
 using Crm.Modules.Integrations.Meta;
 using Crm.Modules.Integrations.Twilio;
 using Crm.Modules.Pricing;
+using Crm.Modules.CoreCrm;
 using Crm.Infrastructure.Persistence;
 using Crm.Shared.Modules;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +46,8 @@ var modules = new List<ICrmModule>
     new MetaModule(),
     new TwilioModule(),
     new AiAssistantModule(),
-    new PricingModule()
+    new PricingModule(),
+    new CoreCrmModule()
 };
 
 foreach (var module in modules)
@@ -57,8 +59,31 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<Crm.Infrastructure.Persistence.DatabaseSeeder>();
-    await seeder.SeedAsync().ConfigureAwait(false);
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var maxRetries = 5;
+    for (int i = 1; i <= maxRetries; i++)
+    {
+        try
+        {
+            var seeder = scope.ServiceProvider.GetRequiredService<Crm.Infrastructure.Persistence.DatabaseSeeder>();
+            await seeder.SeedAsync().ConfigureAwait(false);
+            logger.LogInformation("Database seeded successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to seed database on attempt {Attempt}. Retrying...", i);
+            if (i == maxRetries)
+            {
+                logger.LogCritical("Could not seed the database after multiple attempts. The database might not exist or migrations haven't been applied yet. Run 'dev.ps1 migrate'.");
+                // Do NOT throw here, let the app start so health checks pass, but note that CRUD will fail.
+            }
+            else
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -91,24 +116,6 @@ app.MapPost("/auth/login", () =>
     return Results.Ok(new { Token = "dummy-jwt-token" });
 }).WithTags("Auth");
 app.MapGet("/me", () => Results.Ok(new { User = "admin", TenantId = "default" })).RequireAuthorization().WithTags("Auth");
-
-// CRUD Stubs
-var crmGroup = app.MapGroup("/api/crm").WithTags("CRM");
-crmGroup.MapGet("/customers", () => Results.Ok(Array.Empty<object>()));
-crmGroup.MapPost("/customers", () => Results.Ok());
-crmGroup.MapGet("/leads", () => Results.Ok(Array.Empty<object>()));
-crmGroup.MapPost("/leads", () => Results.Ok());
-crmGroup.MapGet("/jobs", () => Results.Ok(Array.Empty<object>()));
-crmGroup.MapPost("/jobs", () => Results.Ok());
-
-// Availability Stub
-app.MapGet("/api/availability", (string? date, string? serviceArea, int? durationMinutes) =>
-{
-    return Results.Ok(new[] {
-        new { Time = "09:00", Available = true },
-        new { Time = "10:00", Available = true }
-    });
-}).WithTags("Scheduling");
 
 foreach (var module in modules)
 {
